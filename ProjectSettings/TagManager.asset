@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Flooring
+    uniqueID: 1765778713
+    locked: 0
+  - name: Waist Height (Tank Bodies)
+    uniqueID: 4234085473
+    locked: 0
+  - name: Shoulder Height (Tank Turrets)
+    uniqueID: 2849265457
+    locked: 0
+  - name: Head Height (Impassible Walls)
+    uniqueID: 846110977
+    locked: 0
+  - name: Over Head (Celings)
+    uniqueID: 2118008529
+    locked: 0
