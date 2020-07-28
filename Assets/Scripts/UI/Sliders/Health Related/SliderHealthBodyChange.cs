@@ -19,6 +19,7 @@ public class SliderHealthBodyChange : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (player != null)
         mImage.sprite = playerSprite.sprite;
     }
 }

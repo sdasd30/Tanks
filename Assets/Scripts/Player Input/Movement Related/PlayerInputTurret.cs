@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class PlayerInputTurret : MonoBehaviour
 {
-    public InputPacket getInputPacket(InputPacket ip)
+    RotationTurret mTurret;
+    InputPacket ip;
+
+    private void Start()
+    {
+        mTurret = GetComponent<RotationTurret>();
+        ip = new InputPacket();
+    }
+    private void FixedUpdate()
     {
         ip.inputTurret = Input.GetAxis("Rotation Turret");
-
-        return ip;
+        //Debug.Log("Send info yeas:" + ip.inputTurret);
+        mTurret.SendInputPacket(ip);
     }
 }

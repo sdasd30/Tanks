@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class FireProjectile : MonoBehaviour
 {
-    [SerializeField] float cooldownMax;
-    [SerializeField] float curCooldown;
-    [SerializeField] bool playerControl;
-    public bool autoLoader;
+    float cooldownMax;
+    float curCooldown;
+    bool playerControl;
+    bool autoLoader;
     InputPacket ip;
-    PlayerInputTurretAction1 playerAction1;
     GunStats gs;
     Vector2 offset;
 
@@ -17,21 +16,22 @@ public class FireProjectile : MonoBehaviour
     void Start()
     {
         ip = new InputPacket();
-        if (playerControl)
-            playerAction1 = GetComponent<PlayerInputTurretAction1>();
         gs = GetComponent<GunStats>();
         cooldownMax = gs.cooldown;
+        if (gs.preignitor == false)
+            curCooldown = cooldownMax;
+        autoLoader = gs.autoLoader;
         offset = gs.offset;
     }
 
     // Update is called once per frame
+    public void SendInputPacket(InputPacket nIP)
+    {
+        ip = nIP;
+    }
+
     void Update()
     {
-        if (playerControl)
-        {
-            ip = playerAction1.GetInputPacket(ip);
-        }
-
         if (!autoLoader)
         {
             if (ip.inputReload && curCooldown >= 0)

@@ -5,51 +5,58 @@ using UnityEngine;
 public class RotationTurret : MonoBehaviour
 {
     Transform m_body;
-    PlayerInputTurret playerInput;
-    public float maxRotSpeed;
-    public float accelRotSpeed;
-    public float curRotSpeed;
-    public float slowRotSpeed = .05f;
+    GunStats gs;
+    float maxRotSpeed = 180;
+    float accelRotSpeed = 360;
+    [SerializeField] float curRotSpeed;
+    float slowRotSpeed = 2f;
     InputPacket ip;
     float desireRot;
     // Start is called before the first frame update
     void Start()
     {
         m_body = GetComponent<Transform>();
+        gs = GetComponent<GunStats>();
+        maxRotSpeed = gs.maxRotSpeed;
+        accelRotSpeed = gs.accelRotSpeed;
+        slowRotSpeed = gs.dampenRotSpeed;
         ip = new InputPacket();
-        playerInput = GetComponent<PlayerInputTurret>();
+        //if (playerControl)
+            //playerInput = GetComponent<PlayerInputTurret>();
+        
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        ip = playerInput.getInputPacket(ip);
+        //ip = playerInput.getInputPacket(ip);
         desireRot += curRotSpeed * Time.fixedDeltaTime;
         m_body.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, desireRot));
-        updateSpeed(ip);
+        UpdateSpeed(ip);
+
     }
 
-    public void updateSpeed(InputPacket ip)
+    public void UpdateSpeed(InputPacket ip)
     {
         if (ip.inputTurret > .1f)
         {
             if (curRotSpeed < maxRotSpeed)
             {
-                curRotSpeed += accelRotSpeed * Time.fixedDeltaTime;
+                curRotSpeed += accelRotSpeed * Time.fixedDeltaTime * Mathf.Abs(ip.inputTurret);
             }
         }
         else if (ip.inputTurret < -.1f)
         {
             if (curRotSpeed > -maxRotSpeed)
             {
-                curRotSpeed -= accelRotSpeed * Time.fixedDeltaTime;
+                curRotSpeed -= accelRotSpeed * Time.fixedDeltaTime * Mathf.Abs(ip.inputTurret);
             }
         }
         else
-            slowRotation(ip);
+            SlowRotation(ip);
     }
 
-    public void slowRotation(InputPacket ip)
+    public void SlowRotation(InputPacket ip)
     {
         if (curRotSpeed > 0)
         {
@@ -71,5 +78,10 @@ public class RotationTurret : MonoBehaviour
             return;
         }
             
+    }
+
+    public void SendInputPacket(InputPacket nIP)
+    {
+        ip = nIP;
     }
 }

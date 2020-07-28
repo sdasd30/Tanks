@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class PlayerInputTurretAction1 : MonoBehaviour
 {
-    public InputPacket GetInputPacket(InputPacket ip)
+    FireProjectile mTurret;
+    InputPacket ip;
+
+    private void Start()
+    {
+        mTurret = GetComponent<FireProjectile>();
+        ip = new InputPacket();
+    }
+    private void Update()
     {
         ip.inputAction1 = Input.GetButton("Action1");
         ip.inputReload = Input.GetButton("Reload");
-        return ip;
+        mTurret.SendInputPacket(ip);
     }
+
 }
+
