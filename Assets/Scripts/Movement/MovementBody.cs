@@ -33,7 +33,7 @@ public class MovementBody : MonoBehaviour
         yvel = (Mathf.Rad2Deg * Time.fixedDeltaTime * Mathf.Sin(angle * Mathf.Deg2Rad)) * curMoveSpeed;
         rgd.velocity = new Vector2(xvel, yvel);
         rgd.angularVelocity = curRotSpeed;
-        input.GetInputPacket(ip);
+        ip = input.GetInputPacket(ip);
         ChangeTranslate(ip);
         ChangeRotate(ip);
         KillTranslate(ip);

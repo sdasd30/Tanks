@@ -8,7 +8,6 @@ public class MovementBodyRaw : MonoBehaviour
     Rigidbody2D rgd;
     AIScript input; 
     public float MoveSpeed;
-    public bool playerControl;
     InputPacket ip;
     void Start()
     {
