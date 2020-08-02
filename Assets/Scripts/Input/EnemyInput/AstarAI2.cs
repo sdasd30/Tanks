@@ -9,13 +9,19 @@ public class AstarAI2 : MonoBehaviour
     public Transform target;
     Seeker seeker;
     public Path path;
+    float timer;
     private void Start()
     {
         seeker = GetComponent<Seeker>();
     }
     private void Update()
     {
-        seeker.StartPath(transform.position, target.position, complete);
+        timer -= Time.deltaTime;
+        if (timer <= 0f)
+        {
+            seeker.StartPath(transform.position, target.position, complete);
+            timer = 1f;
+        }
     }
     private void complete(Path p)
     {

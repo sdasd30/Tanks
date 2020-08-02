@@ -6,14 +6,13 @@ public class MovementBody : MonoBehaviour
 {
     // Start is called before the first frame update
     Rigidbody2D rgd;
-    PlayerInputBody playerInput;
+    AIScript input;
     public float maxMoveSpeed;
     public float accelMoveSpeed;
     public float maxRotSpeed;
     public float accelRotSpeed;
     public float curMoveSpeed;
     public float curRotSpeed;
-    public bool playerControl;
     InputPacket ip;
     float xvel;
     float yvel;
@@ -22,8 +21,8 @@ public class MovementBody : MonoBehaviour
     {
         rgd = GetComponent<Rigidbody2D>();
         ip = new InputPacket();
-        if (playerControl)
-            playerInput = GetComponent<PlayerInputBody>();
+        input = GetComponent<AIScript>();
+        Debug.Log(input);
     }
 
     // Update is called once per frame
@@ -34,17 +33,15 @@ public class MovementBody : MonoBehaviour
         yvel = (Mathf.Rad2Deg * Time.fixedDeltaTime * Mathf.Sin(angle * Mathf.Deg2Rad)) * curMoveSpeed;
         rgd.velocity = new Vector2(xvel, yvel);
         rgd.angularVelocity = curRotSpeed;
-
-        if (playerControl)
-            ip = playerInput.getInputPacket(ip);
-        changeTranslate(ip);
-        changeRotate(ip);
-        killTranslate(ip);
-        killRotate(ip);
+        input.GetInputPacket(ip);
+        ChangeTranslate(ip);
+        ChangeRotate(ip);
+        KillTranslate(ip);
+        KillRotate(ip);
 
     }
 
-    public void changeTranslate(InputPacket ip)
+    public void ChangeTranslate(InputPacket ip)
     {
         if (curMoveSpeed < maxMoveSpeed && ip.inputTranslate >= .1)
         {
@@ -69,7 +66,7 @@ public class MovementBody : MonoBehaviour
         }
     }
 
-    public void changeRotate (InputPacket ip)
+    public void ChangeRotate (InputPacket ip)
     {
         if (curRotSpeed < maxRotSpeed && ip.inputRotate >= .1)
         {
@@ -94,7 +91,7 @@ public class MovementBody : MonoBehaviour
         }
     }
     
-    public void killTranslate (InputPacket ip)
+    public void KillTranslate (InputPacket ip)
     {
         if (ip.cancelTranslate)
         {
@@ -113,7 +110,7 @@ public class MovementBody : MonoBehaviour
         }
     }
 
-    public void killRotate (InputPacket ip)
+    public void KillRotate (InputPacket ip)
     {
         if (ip.cancelRotate)
         {

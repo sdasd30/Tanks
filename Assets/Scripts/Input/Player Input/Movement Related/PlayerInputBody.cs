@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputBody : MonoBehaviour
+public class PlayerInputBody : AIScript
 {
-    public InputPacket getInputPacket(InputPacket ip)
+    public override InputPacket GetInputPacket(InputPacket ip)
     {
         ip.reset();
         ip.inputTranslate = Input.GetAxis("Translation");
