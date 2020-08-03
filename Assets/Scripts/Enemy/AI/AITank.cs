@@ -22,15 +22,19 @@ public class AITank : AIScript
         }
         path = RequestPath();
 
-        StartCoroutine("PathCheck");
+        //StartCoroutine("PathCheck");
     }
 
     private void Update()
     {
+        transform.LookAt(path.vectorPath[currentWaypoint]);
+        Debug.Log("L00king at " + path.vectorPath[currentWaypoint]);
         if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < distBuffer)
         {
+            Debug.Log("I'm close to waypoint " + currentWaypoint);
             currentWaypoint++;
         }
+        
     }
 
     Path RequestPath()
@@ -56,7 +60,7 @@ public class AITank : AIScript
             mAn += 360;
         }
         float alternatemAN = (mAn < 180) ? mAn + 360 : mAn - 360;
-        Debug.Log("Target: " + dAn + " mine: " + mAn);
+        //Debug.Log("Target: " + dAn + " mine: " + mAn);
         if (Mathf.Abs(alternatemAN - dAn) < Mathf.Abs(mAn - dAn))
         {
             coolBool = -1;
@@ -114,4 +118,12 @@ public class AITank : AIScript
             yield return new WaitForSeconds(.3f);
         }
     }
+
+    /*private void DebugPathWaypoints(Path p)
+    {
+        for (int i = 0; i < p.vectorPath; i++)
+        {
+
+        }
+    }*/
 }

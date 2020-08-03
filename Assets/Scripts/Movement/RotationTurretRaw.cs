@@ -6,7 +6,7 @@ public class RotationTurretRaw : MonoBehaviour
 {
     Transform m_body;
     GunStats gs;
-    float rotSpeed = 180;
+    float rotSpeed = 45;
     [SerializeField] float curRotSpeed;
     float curRot;
     InputPacket ip;
@@ -18,9 +18,6 @@ public class RotationTurretRaw : MonoBehaviour
         gs = GetComponent<GunStats>();
         rotSpeed = gs.maxRotSpeed;
         ip = new InputPacket();
-        //if (playerControl)
-        //playerInput = GetComponent<PlayerInputTurret>();
-
     }
 
     // Update is called once per frame

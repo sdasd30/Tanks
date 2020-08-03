@@ -33,7 +33,7 @@ public class MovementBodyTankRaw : MonoBehaviour
         rgd.angularVelocity = rotSpeed;
         ip = input.GetInputPacket(ip);
         ChangeTranslate(ip);
-        ChangeRotate(ip);
+        //ChangeRotate(ip);
     }
 
     public void ChangeTranslate(InputPacket ip)
