@@ -8,13 +8,16 @@ public class AITank : AIScript
     public float stopDistance; //When will the AI stop moving towards the target?
     Path path;
     public Transform target; //Defaults to the Player
-    public float distBuffer = .1f; //How far can this get from the node while being okay?
+    public float distBuffer = .00001f; //How far can this get from the node while being okay?
     public float angleBuffer = 10f; //How far can it be the wrong angle before it says, OK!
     Rigidbody2D mRigidBody;
     int currentWaypoint;
 
+    Transform DEBUGOBJECT;
+
     private void Start()
     {
+        DEBUGOBJECT = FindObjectOfType<GunStats>().transform;
         mRigidBody = GetComponent<Rigidbody2D>();
         if (target == null)
         {
@@ -27,23 +30,55 @@ public class AITank : AIScript
 
     private void Update()
     {
-        transform.LookAt(path.vectorPath[currentWaypoint]);
-        Debug.Log("L00king at " + path.vectorPath[currentWaypoint]);
+        DEBUGOBJECT.position = path.vectorPath[currentWaypoint];
+        //transform.LookAt(path.vectorPath[currentWaypoint]);
+        //Debug.Log("Waypoint #" + currentWaypoint + ": " + path.vectorPath[currentWaypoint]);
+        SetAngle();
         if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < distBuffer)
         {
             Debug.Log("I'm close to waypoint " + currentWaypoint);
-            currentWaypoint++;
         }
-        
+        if (Input.GetKeyDown("j")) //DEBUG
+        {
+            IncrementCurWaypoint();
+            TryMove();
+        }
+        if (Input.GetKeyDown("l")) //DEBUG
+        {
+            path = RequestPath();
+        }
+    }
+
+    public void IncrementCurWaypoint() //DEBUG
+    {
+        //Debug.Log("click");
+        currentWaypoint++;
+    }
+
+    void TryMove()
+    {
+        if (currentWaypoint != 0)
+        {
+            this.transform.position = new Vector2(path.vectorPath[currentWaypoint - 1].x, path.vectorPath[currentWaypoint - 1].y);
+        }
+        Debug.Log("Distance is " + Vector2.Distance(this.transform.position, DEBUGOBJECT.transform.position));
     }
 
     Path RequestPath()
     {
-        //Debug.LogWarning("New Path");
+        //Debug.Log("New Path");
         currentWaypoint = 0;
         return GetComponent<Seeker>().StartPath(transform.position, target.position);
     }
 
+    void SetAngle()
+    {
+        Vector2 target= new Vector2(path.vectorPath[currentWaypoint].x, path.vectorPath[currentWaypoint].y);
+        Vector2 mPos = new Vector2(this.transform.position.x, this.transform.position.y);
+        float angle = Mathf.Atan2((target.y-mPos.y),(target.x-mPos.x)) * Mathf.Rad2Deg;
+        this.transform.rotation = Quaternion.Euler(0,0,angle);
+        //Debug.Log("Trying to set angle, is this correct? " + angle);
+    }
     float CalcAngle(Vector3 targetPosition)
     {
         float num;
@@ -80,13 +115,6 @@ public class AITank : AIScript
         else
             num = 0;
         return num;
-    }
-
-    float OkAngle()
-    {
-        
-
-        return 0;
     }
 
     /*
