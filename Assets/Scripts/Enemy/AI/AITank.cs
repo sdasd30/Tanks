@@ -8,10 +8,11 @@ public class AITank : AIScript
     public float stopDistance; //When will the AI stop moving towards the target?
     Path path;
     public Transform target; //Defaults to the Player
-    public float distBuffer = .00001f; //How far can this get from the node while being okay?
+    public float distBuffer = .01f; //How far can this get from the node while being okay?
     public float angleBuffer = 10f; //How far can it be the wrong angle before it says, OK!
+    public float repathRate = .3f; //How much time should pass between path finds?
     Rigidbody2D mRigidBody;
-    int currentWaypoint;
+    int currentWaypoint = 2;
 
     Transform DEBUGOBJECT;
 
@@ -25,7 +26,7 @@ public class AITank : AIScript
         }
         path = RequestPath();
 
-        //StartCoroutine("PathCheck");
+        StartCoroutine("PathCheck");
     }
 
     private void Update()
@@ -37,6 +38,7 @@ public class AITank : AIScript
         if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < distBuffer)
         {
             Debug.Log("I'm close to waypoint " + currentWaypoint);
+            IncrementCurWaypoint();
         }
         if (Input.GetKeyDown("j")) //DEBUG
         {
@@ -52,7 +54,10 @@ public class AITank : AIScript
     public void IncrementCurWaypoint() //DEBUG
     {
         //Debug.Log("click");
-        currentWaypoint++;
+        if (currentWaypoint < path.vectorPath.Count)
+        {
+            currentWaypoint++;
+        }
     }
 
     void TryMove()
@@ -67,7 +72,7 @@ public class AITank : AIScript
     Path RequestPath()
     {
         //Debug.Log("New Path");
-        currentWaypoint = 0;
+        currentWaypoint = 2;
         return GetComponent<Seeker>().StartPath(transform.position, target.position);
     }
 
@@ -116,15 +121,6 @@ public class AITank : AIScript
             num = 0;
         return num;
     }
-
-    /*
-    public override InputPacket GetInputPacket(InputPacket ip)
-    {
-
-        ip.reset();
-        return ip;
-    }
-    */
     public override InputPacket GetInputPacket(InputPacket ip)
     {
 
@@ -143,15 +139,8 @@ public class AITank : AIScript
         for(; ; )
         {
             path = RequestPath();
-            yield return new WaitForSeconds(.3f);
+            yield return new WaitForSeconds(repathRate);
         }
     }
 
-    /*private void DebugPathWaypoints(Path p)
-    {
-        for (int i = 0; i < p.vectorPath; i++)
-        {
-
-        }
-    }*/
 }
