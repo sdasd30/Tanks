@@ -3,21 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+public enum MovementState
+{
+    STILL,
+    ROTATE,
+    MOVE,
+    FULL
+}
+
 public class AITank : AIScript
 {
-    public float stopDistance; //When will the AI stop moving towards the target?
+
+
+    MovementState state = MovementState.STILL;
+    //public float stopDistance; //When will the AI stop moving towards the target?
+    public int waypointsAway = 5; //How many waypoints away should the AI stop trying to get to the playeR?
     Path path;
     public Transform target; //Defaults to the Player
     public float distBuffer = .01f; //How far can this get from the node while being okay?
-    public float angleBuffer = 10f; //How far can it be the wrong angle before it says, OK!
+    public float angleBuffer = 3f; //How far can it be the wrong angle before it says, OK!
     public float repathRate = .3f; //How much time should pass between path finds?
     Rigidbody2D mRigidBody;
     int currentWaypoint = 2;
+    InputPacket ip;
 
     Transform DEBUGOBJECT;
 
     private void Start()
     {
+        ip = new InputPacket();
         DEBUGOBJECT = FindObjectOfType<GunStats>().transform;
         mRigidBody = GetComponent<Rigidbody2D>();
         if (target == null)
@@ -31,30 +45,68 @@ public class AITank : AIScript
 
     private void Update()
     {
-        DEBUGOBJECT.position = path.vectorPath[currentWaypoint];
-        //transform.LookAt(path.vectorPath[currentWaypoint]);
-        //Debug.Log("Waypoint #" + currentWaypoint + ": " + path.vectorPath[currentWaypoint]);
-        SetAngle();
         if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < distBuffer)
         {
-            Debug.Log("I'm close to waypoint " + currentWaypoint);
             IncrementCurWaypoint();
         }
+        //DEBUGOBJECT.position = path.vectorPath[currentWaypoint];
+        //SetAngle();
+        CheckState();
+        ActionCall();
         if (Input.GetKeyDown("j")) //DEBUG
         {
             IncrementCurWaypoint();
             TryMove();
         }
-        if (Input.GetKeyDown("l")) //DEBUG
-        {
-            path = RequestPath();
-        }
     }
 
-    public void IncrementCurWaypoint() //DEBUG
+
+    void CheckState()
     {
-        //Debug.Log("click");
-        if (currentWaypoint < path.vectorPath.Count)
+        if (path.vectorPath.Count - currentWaypoint < waypointsAway)
+        {
+            state = MovementState.STILL;
+        }
+        else if (CheckAngleDiff() <= angleBuffer)
+        {
+            state = MovementState.MOVE;
+        }
+        else
+        {
+            state = MovementState.ROTATE;
+        }
+        /*else if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) > distBuffer)
+        {
+            state = MovementState.ROTATE;
+        }
+        else
+        {
+            state = MovementState.STILL;
+        }*/
+    }
+
+    void ActionCall()
+    {
+        if (state == MovementState.STILL)
+        {
+            ip.inputRotate = 0;
+            ip.inputTranslate = 0;
+        }
+        if (state == MovementState.MOVE)
+        {
+            ip.inputRotate = 0;
+            ip.inputTranslate = 1;
+        }
+        if (state == MovementState.ROTATE)
+        {
+            ip.inputTranslate = 0;
+            ip.inputRotate = CalcAngle(path.vectorPath[currentWaypoint],this.transform.position);
+        }
+
+    }
+    public void IncrementCurWaypoint()
+    {
+        if (currentWaypoint< path.vectorPath.Count)
         {
             currentWaypoint++;
         }
@@ -66,31 +118,33 @@ public class AITank : AIScript
         {
             this.transform.position = new Vector2(path.vectorPath[currentWaypoint - 1].x, path.vectorPath[currentWaypoint - 1].y);
         }
-        Debug.Log("Distance is " + Vector2.Distance(this.transform.position, DEBUGOBJECT.transform.position));
     }
 
     Path RequestPath()
     {
-        //Debug.Log("New Path");
         currentWaypoint = 2;
         return GetComponent<Seeker>().StartPath(transform.position, target.position);
     }
 
-    void SetAngle()
+    float CheckAngleDiff()
     {
+        float diff = 0;
         Vector2 target= new Vector2(path.vectorPath[currentWaypoint].x, path.vectorPath[currentWaypoint].y);
         Vector2 mPos = new Vector2(this.transform.position.x, this.transform.position.y);
         float angle = Mathf.Atan2((target.y-mPos.y),(target.x-mPos.x)) * Mathf.Rad2Deg;
-        this.transform.rotation = Quaternion.Euler(0,0,angle);
-        //Debug.Log("Trying to set angle, is this correct? " + angle);
+        //this.transform.rotation = Quaternion.Euler(0,0,angle);
+        diff = Mathf.Abs((angle - this.transform.rotation.eulerAngles.z)%360);
+        //Debug.Log("Personally, I think the diffrence is:" + diff);
+        return diff;
     }
-    float CalcAngle(Vector3 targetPosition)
+    float CalcAngle(Vector3 targetTransform,Vector3 mTransform)
     {
-        float num;
+        //Debug.Log("Schmoving");
+        Vector2 targetPosition = new Vector2(targetTransform.x - mTransform.x, targetTransform.y - mTransform.y);
+        float num = 0;
         float dAn = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg;
         float mAn = mRigidBody.rotation;
         float coolBool = 1;
-        float modVal = -1;
         if (dAn < 0)
         {
             dAn += 360;
@@ -106,31 +160,23 @@ public class AITank : AIScript
             coolBool = -1;
         }
 
-        if (dAn - mAn >= angleBuffer)
+        if (dAn - mAn > 0)
         {
             //Debug.Log("ip1");
-            num = 1 * modVal * coolBool;
+            num = 1 * coolBool;
 
         }
-        else if (mAn - dAn >= angleBuffer)
+        else if (mAn - dAn >= 0)
         {
             //Debug.Log("ip-1");
-            num = -1 * modVal * coolBool;
+            num = -1 * coolBool;
         }
-        else
-            num = 0;
         return num;
     }
-    public override InputPacket GetInputPacket(InputPacket ip)
+    public override InputPacket GetInputPacket(InputPacket nIP)
     {
-
-        //ip.reset();
-        Vector3 mPos = this.transform.position;
-        Vector3 desirePos = path.vectorPath[currentWaypoint];
-        float dist = Vector3.Distance(mPos, desirePos);
-        ip.inputTranslate = 1;
-        ip.inputRotate = CalcAngle(desirePos);
-        return ip;
+        nIP = ip;
+        return nIP;
     }
 
     IEnumerator PathCheck()
