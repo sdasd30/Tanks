@@ -203,7 +203,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1568426839}
+      - m_Target: {fileID: 0}
         m_MethodName: IncrementCurWaypoint
         m_Mode: 1
         m_Arguments:
@@ -611,7 +611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1105560391
 Rigidbody2D:
   serializedVersion: 4
@@ -801,7 +801,6 @@ GameObject:
   - component: {fileID: 1482062656}
   - component: {fileID: 1482062655}
   - component: {fileID: 1482062654}
-  - component: {fileID: 1482062659}
   m_Layer: 8
   m_Name: Walls
   m_TagString: Untagged
@@ -2079,36 +2078,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &1482062659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1482062652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efee954c69f0d421086729bb8df1137f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 5265791843160228327
-  points: []
-  convex: 1
-  minBoundsHeight: 1
-  penaltyDelta: 0
-  modifyWalkability: 0
-  setWalkability: 0
-  applyOnStart: 1
-  applyOnScan: 1
-  updatePhysics: 0
-  resetPenaltyOnPhysics: 1
-  updateErosion: 1
-  modifyTag: 1
-  setTag: 1
-  legacyMode: 0
-  serializedVersion: 1
-  legacyUseWorldSpace: 0
 --- !u!1 &1534538607
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,7 +2160,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1568426839}
+      - m_Target: {fileID: 0}
         m_MethodName: IncrementCurWaypoint
         m_Mode: 1
         m_Arguments:
@@ -2330,8 +2299,9 @@ GameObject:
   - component: {fileID: 1568426840}
   - component: {fileID: 1568426837}
   - component: {fileID: 1568426838}
-  - component: {fileID: 1568426839}
   - component: {fileID: 1568426843}
+  - component: {fileID: 1568426844}
+  - component: {fileID: 1568426839}
   m_Layer: 0
   m_Name: Seeker
   m_TagString: Untagged
@@ -2400,15 +2370,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1568426836}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e8a0fd30f954ab4a921ffdd401da91a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointsAway: 12
+  waypointsAway: 5
   target: {fileID: 0}
-  distBuffer: 0.3
-  angleBuffer: 30
+  distBuffer: 0.01
+  angleBuffer: 3
   repathRate: 0.3
 --- !u!50 &1568426840
 Rigidbody2D:
@@ -2510,6 +2480,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxMoveSpeed: 0.5
   maxRotSpeed: 30
+--- !u!114 &1568426844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568426836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207fd2c7a488db24aa0f769522bdec4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1608456259
 GameObject:
   m_ObjectHideFlags: 0

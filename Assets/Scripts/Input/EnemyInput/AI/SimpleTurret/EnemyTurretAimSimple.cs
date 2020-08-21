@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyTurretAimSimple : MonoBehaviour
+public class EnemyTurretAimSimple : AITurret
 {
     [SerializeField] GameObject target;
     Rigidbody2D mRigidBody;
@@ -36,7 +36,6 @@ public class EnemyTurretAimSimple : MonoBehaviour
             targetPosition = new Vector2(targetTransform.position.x - mTransform.position.x, targetTransform.position.y - mTransform.position.y);
             desireAngle = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg;
             mAngle = mRigidBody.rotation;
-            mTurret.SendInputPacket(CalculateIP(desireAngle, mAngle));
         }
     }
 
@@ -74,6 +73,11 @@ public class EnemyTurretAimSimple : MonoBehaviour
         }
         else
             ip.inputTurret = 0;
+        return ip;
+    }
+
+    public override InputPacket GetInputPacket()
+    {
         return ip;
     }
 }

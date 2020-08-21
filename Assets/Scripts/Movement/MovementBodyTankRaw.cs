@@ -35,7 +35,7 @@ public class MovementBodyTankRaw : MonoBehaviour
 
     public void ChangeTranslate(InputPacket ip)
     {
-       // Debug.Log("translate " + ip.inputTranslate);
+        Debug.Log("translate " + ip.inputTranslate);
         if (ip.inputTranslate > .1f)
         {
             moveSpeed = maxMoveSpeed;

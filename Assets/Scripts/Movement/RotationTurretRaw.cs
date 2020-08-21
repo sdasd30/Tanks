@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class RotationTurretRaw : MonoBehaviour
 {
+    
     Transform m_body;
+    AITurret inputSource;
     GunStats gs;
     float rotSpeed = 45;
     [SerializeField] float curRotSpeed;
@@ -16,18 +18,19 @@ public class RotationTurretRaw : MonoBehaviour
     {
         m_body = GetComponent<Transform>();
         gs = GetComponent<GunStats>();
-        rotSpeed = gs.maxRotSpeed;
+        inputSource = GetComponent<AITurret>();
+        if (gs != null)
+            rotSpeed = gs.maxRotSpeed;
         ip = new InputPacket();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //ip = playerInput.getInputPacket(ip);
+        ip = inputSource.GetInputPacket();
         desireRot += curRot * Time.fixedDeltaTime;
         m_body.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, desireRot));
         UpdateSpeed(ip);
-
     }
 
     public void UpdateSpeed(InputPacket ip)
@@ -42,10 +45,5 @@ public class RotationTurretRaw : MonoBehaviour
         }
         else
             curRot = 0;
-    }
-
-    public void SendInputPacket(InputPacket nIP)
-    {
-        ip = nIP;
     }
 }

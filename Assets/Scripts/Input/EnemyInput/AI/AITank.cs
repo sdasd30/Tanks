@@ -67,13 +67,17 @@ public class AITank : AIScript
         {
             state = MovementState.STILL;
         }
-        else if (CheckAngleDiff() <= angleBuffer)
+        else if (CheckAngleDiff() >= angleBuffer)
         {
-            state = MovementState.MOVE;
+            state = MovementState.ROTATE;
+        }
+        else if (CheckAngleDiff() >= angleBuffer/2f)
+        {
+            state = MovementState.FULL;
         }
         else
         {
-            state = MovementState.ROTATE;
+            state = MovementState.MOVE;
         }
         /*else if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) > distBuffer)
         {
@@ -101,6 +105,11 @@ public class AITank : AIScript
         {
             ip.inputTranslate = 0;
             ip.inputRotate = CalcAngle(path.vectorPath[currentWaypoint],this.transform.position);
+        }
+        if (state == MovementState.FULL)
+        {
+            ip.inputRotate = CalcAngle(path.vectorPath[currentWaypoint], this.transform.position);
+            ip.inputTranslate = 1;
         }
 
     }
