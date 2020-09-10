@@ -19,6 +19,7 @@ public class RotationTurretRaw : MonoBehaviour
         m_body = GetComponent<Transform>();
         gs = GetComponent<GunStats>();
         inputSource = GetComponent<AITurret>();
+        //inputSource = GetComponent<testerTurret>();
         if (gs != null)
             rotSpeed = gs.maxRotSpeed;
         ip = new InputPacket();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class MovementBodyRaw : MonoBehaviour
 {
     // Start is called before the first frame update

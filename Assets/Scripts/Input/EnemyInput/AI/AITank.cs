@@ -13,8 +13,7 @@ public enum MovementState
 
 public class AITank : AIScript
 {
-
-
+    public Transform testobj;
     MovementState state = MovementState.STILL;
     //public float stopDistance; //When will the AI stop moving towards the target?
     public int waypointsAway = 5; //How many waypoints away should the AI stop trying to get to the playeR?
@@ -45,6 +44,7 @@ public class AITank : AIScript
 
     private void Update()
     {
+        testobj.position = path.vectorPath[currentWaypoint];
         if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < distBuffer)
         {
             IncrementCurWaypoint();
@@ -71,7 +71,7 @@ public class AITank : AIScript
         {
             state = MovementState.ROTATE;
         }
-        else if (CheckAngleDiff() >= angleBuffer/2f)
+        else if (CheckAngleDiff() >= angleBuffer/12f)
         {
             state = MovementState.FULL;
         }
@@ -91,6 +91,9 @@ public class AITank : AIScript
 
     void ActionCall()
     {
+        Debug.Log(state);
+        ip.inputRotate = 0;
+        ip.inputTranslate = 0;
         if (state == MovementState.STILL)
         {
             ip.inputRotate = 0;
@@ -119,6 +122,7 @@ public class AITank : AIScript
         {
             currentWaypoint++;
         }
+
     }
 
     void TryMove()
@@ -141,13 +145,53 @@ public class AITank : AIScript
         Vector2 target= new Vector2(path.vectorPath[currentWaypoint].x, path.vectorPath[currentWaypoint].y);
         Vector2 mPos = new Vector2(this.transform.position.x, this.transform.position.y);
         float angle = Mathf.Atan2((target.y-mPos.y),(target.x-mPos.x)) * Mathf.Rad2Deg;
+        float angle2 = mRigidBody.rotation;
+        if (angle2 < 0) angle2 += 360;
+        if (angle < 0) angle += 360;
+        diff = Mathf.Abs(Mathf.DeltaAngle(angle, mRigidBody.rotation));
+        Debug.Log(diff);
         //this.transform.rotation = Quaternion.Euler(0,0,angle);
-        diff = Mathf.Abs((angle - this.transform.rotation.eulerAngles.z)%360);
+        //diff = Mathf.Abs((angle - this.transform.rotation.eulerAngles.z)%360);
         //Debug.Log("Personally, I think the diffrence is:" + diff);
         return diff;
     }
     float CalcAngle(Vector3 targetTransform,Vector3 mTransform)
     {
+        float from = mRigidBody.rotation % 360;
+        Vector2 targetPosition = new Vector2(targetTransform.x - mTransform.x, targetTransform.y - mTransform.y);
+        float to = Mathf.Atan2(targetPosition.y, targetPosition.x) * Mathf.Rad2Deg;
+        //Debug.Log("f:" + from + "t:" + to);
+        if (from < 0)
+        {
+            from += 360;
+        }
+        if (to < 0)
+        {
+            to += 360;
+        }
+        //Debug.Log(Mathf.DeltaAngle(from, to));
+        float left = (360 - from) + to;
+        float right = from - to;
+
+        if (from < to)
+        {
+            if (to > 0)
+            {
+                left = to - from;
+                right = (360 - to) + from;
+            }
+            else
+            {
+                left = (360 - to) + from;
+                right = to - from;
+            }
+        }
+        if (left <= right) return 1;
+        else if (right <= left) return -1;
+        else return 0;
+        
+
+        /*
         //Debug.Log("Schmoving");
         Vector2 targetPosition = new Vector2(targetTransform.x - mTransform.x, targetTransform.y - mTransform.y);
         float num = 0;
@@ -181,6 +225,7 @@ public class AITank : AIScript
             num = -1 * coolBool;
         }
         return num;
+        */
     }
     public override InputPacket GetInputPacket(InputPacket nIP)
     {

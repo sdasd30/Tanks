@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class FollowObject : MonoBehaviour
 {
     public Transform Target;
     public Transform OptionalFollowRot;
+    public bool isCamera;
     void Start()
     {
+        if (isCamera)
+        {
+            Target = FindObjectOfType<PlayerInputBody>().transform;
+        }
     }
 
     void LateUpdate()
