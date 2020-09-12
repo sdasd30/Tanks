@@ -91,7 +91,6 @@ public class AITank : AIScript
 
     void ActionCall()
     {
-        Debug.Log(state);
         ip.inputRotate = 0;
         ip.inputTranslate = 0;
         if (state == MovementState.STILL)
