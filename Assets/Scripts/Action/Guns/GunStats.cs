@@ -20,5 +20,7 @@ public class GunStats : MonoBehaviour
     public float maxRotSpeed = 180;
     public float accelRotSpeed = 360;
     public float dampenRotSpeed = 2;
+
+    public float AIRange = 3;
 }
 

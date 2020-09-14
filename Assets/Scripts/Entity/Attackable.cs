@@ -6,7 +6,7 @@ public class Attackable : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] float health;
-    [SerializeField] float maxHealth;
+    public float maxHealth;
     public GameObject onDeathCreate;
     public bool friendly;
 

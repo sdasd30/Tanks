@@ -5,6 +5,11 @@ using UnityEngine;
 public class AIScript : MonoBehaviour
 {
     InputPacket ip;
+    public virtual InputPacket ClearInputPacket()
+    {
+        ip = new InputPacket();
+        return ip;
+    }
     public virtual InputPacket GetInputPacket()
     {
         return ip;

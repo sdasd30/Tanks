@@ -35,18 +35,15 @@ public class SliderHealth : MonoBehaviour
 
     Color32 getColor(float hp, float max)
     {
-        Debug.Log(hp +"/" + max);
         Color32 color = new Color32(0, 0, 255, 255);
         if (hp >= max / 2)
         {
-            Debug.Log("groen");
             float math = (255) * (1 - ((hp - (max / 2)) / (max / 2)));
             return new Color32((byte)math, 255, 0, 200);
         }
 
         else
         {
-            Debug.Log("roed");
             float math = (255) * (hp / (max / 2));
             return new Color32(255, (byte)math, 0, 200);
         }
